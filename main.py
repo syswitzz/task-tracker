@@ -4,6 +4,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from database import Base, engine
 
+from schemas import TaskCreate, TaskResponse, UserCreate, UserResponse
+from models import Task, User
+
 
 # Lifespan is a modern way in fastapi to handle startup and shutdown events. replaces older decoreator on_startup, on_shutdown
 @asynccontextmanager
