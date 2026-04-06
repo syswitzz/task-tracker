@@ -4,8 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from database import Base, engine
 
-from schemas import TaskCreate, TaskResponse, UserCreate, UserResponse
-from models import Task, User
+from router import tasks, users
 
 
 # Lifespan is a modern way in fastapi to handle startup and shutdown events. replaces older decoreator on_startup, on_shutdown
@@ -23,8 +22,13 @@ async def lifespan(_app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+app.include_router(users.router, prefix="/users", tags=["users"])   # tags organize the /docs page
+app.include_router(tasks.router, prefix="/tasks", tags=["tasks"])
+
 
 @app.get("/")
-def root():
+async def root():
     return {"message": "Hello world!"}
+
+
 
