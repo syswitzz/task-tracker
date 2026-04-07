@@ -92,7 +92,7 @@ async def update_task(
     if task_data.description is not None and task_data.description != task.description:
         task.description = task_data.description
 
-    if task_data.completed is not None and task_data.completed != task_data.completed:
+    if task_data.completed is not None and task_data.completed != task.completed:
         task.completed = task_data.completed
     
     await db.commit()
