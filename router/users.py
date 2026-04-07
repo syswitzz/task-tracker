@@ -25,7 +25,6 @@ async def get_all_users(
     return users
 
 
-
 @router.post("", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def create_user(
     user_data: UserCreate, 
@@ -40,15 +39,6 @@ async def create_user(
 
     if existing_user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
-    
-    # check for existing username
-    result = await db.execute(
-        select(models.User).where(models.User.username == user_data.username)
-    )
-    existing_user = result.scalars().first()
-
-    if existing_user:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already registered")
     
     new_user = models.User(
         username = user_data.username,
