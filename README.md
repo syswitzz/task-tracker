@@ -6,11 +6,6 @@
 
 ### TODO / ROADMAP
 
-#### fix
-
-* cascade delete a user's post
-  (currently it only deletes the user and not their post)
-
 #### feat
 
 * add authentication (JWT)
