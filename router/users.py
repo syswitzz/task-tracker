@@ -1,10 +1,13 @@
 from typing import Annotated
+from datetime import timedelta, UTC
 
 from fastapi import APIRouter, APIRouter, status, HTTPException, Depends
+from fastapi.security import OAuth2PasswordRequestForm
 
-from schemas import UserCreate, UserResponse, UserUpdate, TaskResponse
+from schemas import UserCreate, UserResponse, UserUpdate, Token
 import models
-from auth import hash_password, verify_password
+from config import settings
+from auth import hash_password, verify_password, create_access_token
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -126,3 +129,30 @@ async def delete_user(
     
     await db.delete(user)
     await db.commit()
+
+
+@router.post("/token", response_model=Token)
+async def login_for_access_token(
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    db: Annotated[AsyncSession, Depends(get_db)]
+):
+    ''' returns token. we have 1. form_data.password, form_data.username'''
+    # OAuth2PasswordRequestForm uses "username" field, but treat is as email
+
+    result = db.execute(select(models.User).where(models.User.email == form_data.username.lower()))
+    user = result.scalars().first()
+
+    if not user or not verify_password(form_data.password, user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Invalid email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    # create the temporary access token if credentials are correct
+    access_token = create_access_token(
+        data = {"sub": str(user.id)},
+        expires_delta=timedelta(minutes=settings.access_token_expire_minutes),
+    )
+
+    return Token(token_type="bearer", access_token=access_token)

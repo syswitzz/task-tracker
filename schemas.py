@@ -40,3 +40,7 @@ class TaskResponse(TaskCreate):
     id: int
     date_created: datetime
     
+
+class Token(BaseModel):
+    access_token: str 
+    token_type: str
