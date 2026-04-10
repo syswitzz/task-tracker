@@ -7,7 +7,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from schemas import UserCreate, UserResponse, UserUpdate, Token
 import models
 from config import settings
-from auth import hash_password, verify_password, create_access_token
+from auth import hash_password, verify_password, create_access_token, CurrentUser
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -156,3 +156,14 @@ async def login_for_access_token(
     )
 
     return Token(token_type="bearer", access_token=access_token)
+
+
+@router.get("/me", response_model=UserResponse)
+async def get_current_user(
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: CurrentUser,
+):
+    result = await db.execute(select(models.User).where(models.User.id == current_user.id))
+    user = result.scalars().first()
+
+    return user
