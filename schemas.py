@@ -37,7 +37,8 @@ class TaskResponse(TaskCreate):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    date_created: datetime
+    created_at: datetime
+    updated_at: datetime
     
 
 class Token(BaseModel):

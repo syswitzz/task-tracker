@@ -12,11 +12,16 @@ class Task(Base):
     title: Mapped[str] = mapped_column(String(200), nullable=False)
     description: Mapped[str] = mapped_column(String(200), nullable=True, default=None)
     completed: Mapped[bool] = mapped_column(Boolean, default=False)
-    # ForeignKey links Tasks to user, but Why index=True here?
+    # ForeignKey links Tasks to user, but Why index=True here? ans: faster lookups
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
-    date_created: Mapped[datetime] = mapped_column(
+    created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default = lambda: datetime.now(UTC),
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default= lambda: datetime.now(UTC),
+        onupdate= lambda: datetime.now(UTC)
     )
 
 

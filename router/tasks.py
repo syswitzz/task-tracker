@@ -6,7 +6,7 @@ from schemas import TaskCreate, TaskResponse, TaskUpdate
 import models
 from auth import CurrentUser
 
-from sqlalchemy import select
+from sqlalchemy import select, asc, desc    # asc, desc used for sorting
 from sqlalchemy.ext.asyncio import AsyncSession
 from database import get_db
 
@@ -20,6 +20,49 @@ async def get_all_tasks(
 ):
     ''' get all the tasks. DEVELOPER USE ONLY '''
     result = await db.execute(select(models.Task))
+    tasks = result.scalars().all()
+
+    return tasks
+
+
+@router.get("/me", response_model=list[TaskResponse])
+async def get_users_tasks(
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: CurrentUser,
+    limit: int = 10,
+    offset: int = 0,
+    sort_by: str = "created_at",   # default sort
+    order: str = "desc",    
+    completed: bool | None = None,
+):
+    ''' get all the tasks of a user with pagination, filtering and sorting. user must be authenticated. '''
+    
+    query = select(models.Task).where(models.Task.user_id == current_user.id)
+    
+    # filtering
+    if completed is not None:
+        query = query.where(models.Task.completed == completed)
+
+    # sorting
+    allowed_sorts = {
+        "created_at": models.Task.created_at,
+        "updated_at": models.Task.updated_at,
+        "title": models.Task.title,
+    }
+    sort_column = allowed_sorts.get(sort_by)
+    if not sort_column:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid sort field")
+    
+    if order=="asc":
+        query = query.order_by(sort_column.asc())
+    else:
+        query = query.order_by(sort_column.desc())
+
+    # pagination
+    limit = min(limit, 100)     # set a maximum limit to prevent abuse
+    query = query.limit(limit).offset(offset)
+
+    result = await db.execute(query)
     tasks = result.scalars().all()
 
     return tasks
@@ -174,28 +217,3 @@ async def mark_task_incomplete(
     return task
 
 
-@router.get("/users/{user_id}", response_model=list[TaskResponse])
-async def get_users_tasks(
-    db: Annotated[AsyncSession, Depends(get_db)],
-    user_id: int,
-    current_user: CurrentUser,
-    limit: int = 10,
-    offset: int = 0,
-    completed: bool | None = None,
-):
-    ''' get all the tasks of a user. user must be authenticated. limit, offset, completed. '''
-    
-    if user_id != current_user.id:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You are not authorized to view this user's tasks")
-
-    result = await db.execute(
-        select(models.Task).where(models.Task.user_id == user_id)
-    )
-    
-    if completed is not None:
-        result = result.where(models.Task.completed == completed)
-
-    result = result.limit(limit).offset(offset)
-    tasks = result.scalars().all()
-
-    return tasks

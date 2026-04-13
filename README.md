@@ -6,8 +6,6 @@
 
 ### TODO / ROADMAP
 
-* add pagination and sorting
-
 * add priority (low, medium, high)
 
 * tags/categories
