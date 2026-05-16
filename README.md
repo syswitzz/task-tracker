@@ -1,53 +1,34 @@
+<div align="center">
+
 # Task Tracker API
 
-Async task management REST API built with FastAPI.
+Async task management REST API built with FastAPI and SQLAlchemy.
 
-Supports JWT authentication, user management, task CRUD operations, and task completion tracking.
+![Python](https://img.shields.io/badge/python-3.12-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-async-green)
+![License](https://img.shields.io/badge/license-MIT-orange)
 
----
-
-## Tech Stack
-
-- Python 3.12+
-- FastAPI
-- SQLAlchemy
-- SQLite + aiosqlite
-- Pydantic Settings
-- JWT Authentication
-- uv
+</div>
 
 ---
 
 ## Features
 
-### Authentication
-
-- JWT authentication
-- OAuth2 password flow
-- Bearer token protected routes
-
-### Users
-
-- Create users
-- Get all users
-- Get current authenticated user
-- Update users
-- Delete users
-
-### Tasks
-
-- Create tasks
-- Get all tasks
-- Get current user's tasks
-- Partially update tasks using `PATCH`
-- Delete tasks
-- Mark tasks complete/incomplete
+- JWT Authentication
+- OAuth2 Password Flow
+- Async SQLAlchemy
+- SQLite + aiosqlite
+- User Management
+- Task CRUD Operations
+- User-specific Tasks
+- Partial Updates with `PATCH`
+- Task Completion Tracking
 
 ---
 
-# Setup
+## Quick Start
 
-## 1. Clone the repository
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/syswitzz/task-tracker-api.git
@@ -56,11 +37,9 @@ cd task-tracker-api
 
 ---
 
-## 2. Install dependencies
+### 2. Install dependencies
 
 This project uses `uv`.
-
-Install dependencies:
 
 ```bash
 uv sync
@@ -68,7 +47,7 @@ uv sync
 
 ---
 
-## 3. Create environment variables
+### 3. Configure environment variables
 
 Create a `.env` file in the project root.
 
@@ -86,7 +65,7 @@ python3 -c "import secrets; print(secrets.token_hex(32))"
 
 ---
 
-## 4. Run the server
+### 4. Run the development server
 
 ```bash
 uv run uvicorn main:app --reload
@@ -125,7 +104,35 @@ The database is automatically created on startup.
 
 ---
 
-## API Endpoints
+## Example Request
+
+### Create Task
+
+```bash
+curl -X POST http://127.0.0.1:8000/tasks \
+-H "Authorization: Bearer <token>" \
+-H "Content-Type: application/json" \
+-d '{"title":"Finish README","description":"Write project documentation"}'
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "title": "Finish README",
+  "description": "Write project documentation",
+  "completed": false,
+  "user_id": 1
+}
+```
+
+---
+
+<details>
+<summary><strong>API Endpoints</strong></summary>
+
+<br>
 
 ### Users
 
@@ -153,36 +160,7 @@ The database is automatically created on startup.
 | POST | `/tasks/{task_id}/complete` | Mark task completed |
 | POST | `/tasks/{task_id}/incomplete` | Mark task incomplete |
 
----
-
-## Example Request
-
-### Create Task
-
-```http
-POST /tasks
-```
-
-Request body:
-
-```json
-{
-  "title": "Finish README",
-  "description": "Write project documentation"
-}
-```
-
-Example response:
-
-```json
-{
-  "id": 1,
-  "title": "Finish README",
-  "description": "Write project documentation",
-  "completed": false,
-  "user_id": 1
-}
-```
+</details>
 
 ---
 
@@ -207,9 +185,7 @@ Example response:
 
 ---
 
-## Roadmap/ TODO
-
-Feel free to contribute
+## Roadmap
 
 - Task priority system
 - Tags & categories
@@ -220,3 +196,7 @@ Feel free to contribute
 - Unit tests
 
 ---
+
+## License
+
+MIT
