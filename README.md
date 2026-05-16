@@ -1,8 +1,8 @@
 # Task Tracker API
 
-A simple async REST API for task management built with FastAPI.
+Async task management REST API built with FastAPI.
 
-Features include JWT authentication, user management, task CRUD operations, and task completion tracking.
+Supports JWT authentication, user management, task CRUD operations, and task completion tracking.
 
 ---
 
@@ -12,22 +12,55 @@ Features include JWT authentication, user management, task CRUD operations, and 
 - FastAPI
 - SQLAlchemy
 - SQLite + aiosqlite
-- JWT Authentication
 - Pydantic Settings
+- JWT Authentication
 - uv
 
 ---
 
-## Setup
+## Features
 
-### Clone the repository
+### Authentication
+
+- JWT authentication
+- OAuth2 password flow
+- Bearer token protected routes
+
+### Users
+
+- Create users
+- Get all users
+- Get current authenticated user
+- Update users
+- Delete users
+
+### Tasks
+
+- Create tasks
+- Get all tasks
+- Get current user's tasks
+- Partially update tasks using `PATCH`
+- Delete tasks
+- Mark tasks complete/incomplete
+
+---
+
+# Setup
+
+## 1. Clone the repository
 
 ```bash
 git clone https://github.com/syswitzz/task-tracker-api.git
 cd task-tracker-api
 ```
 
-### Install dependencies
+---
+
+## 2. Install dependencies
+
+This project uses `uv`.
+
+Install dependencies:
 
 ```bash
 uv sync
@@ -35,9 +68,9 @@ uv sync
 
 ---
 
-## Environment Variables
+## 3. Create environment variables
 
-Create a `.env` file in the root directory.
+Create a `.env` file in the project root.
 
 ```env
 SECRET_KEY=your_secret_key
@@ -53,13 +86,13 @@ python3 -c "import secrets; print(secrets.token_hex(32))"
 
 ---
 
-## Run the server
+## 4. Run the server
 
 ```bash
 uv run uvicorn main:app --reload
 ```
 
-Server runs at:
+Server starts at:
 
 ```text
 http://127.0.0.1:8000
@@ -69,19 +102,12 @@ http://127.0.0.1:8000
 
 ## API Documentation
 
-Swagger UI:
+| Service | URL |
+|---|---|
+| Swagger UI | `http://127.0.0.1:8000/docs` |
+| ReDoc | `http://127.0.0.1:8000/redoc` |
 
-```text
-http://127.0.0.1:8000/docs
-```
-
-ReDoc:
-
-```text
-http://127.0.0.1:8000/redoc
-```
-
-The Swagger Authorize button supports JWT authentication using OAuth2 password flow.
+Swagger UI supports JWT authentication using the built-in **Authorize** button.
 
 ---
 
@@ -96,33 +122,6 @@ tasks.db
 ```
 
 The database is automatically created on startup.
-
----
-
-## Features
-
-### Authentication
-
-- JWT authentication
-- OAuth2 password flow
-- Protected routes with Bearer token
-
-### Users
-
-- Create users
-- Get all users
-- Get current authenticated user
-- Update users
-- Delete users
-
-### Tasks
-
-- Create tasks
-- Get all tasks
-- Get tasks for current user
-- Update tasks partially using PATCH
-- Delete tasks
-- Mark tasks complete/incomplete
 
 ---
 
@@ -203,49 +202,21 @@ Example response:
 ├── schemas.py
 ├── pyproject.toml
 ├── uv.lock
-├── README.md
-└── .gitignore
+└── README.md
 ```
 
 ---
 
-## Roadmap
+## Roadmap/ TODO
 
-### Priority System
+Feel free to contribute
 
-- Low / medium / high task priority
-
-### Tags & Categories
-
-Possible endpoints:
-
-```text
-POST /tags
-GET /tags
-POST /task/{task_id}/tags
-GET /tasks?tag=work
-```
-
-### Deadlines & Reminders
-
-Possible filters:
-
-```text
-GET /tasks?due_today=true
-GET /tasks?overdue=true
-```
-
-### Stats & Analytics
-
-Possible endpoints:
-
-```text
-GET /stats
-GET /user/{user_id}/stats
-```
+- Task priority system
+- Tags & categories
+- Deadlines & reminders
+- Stats & analytics
+- Pagination & filtering
+- Docker support
+- Unit tests
 
 ---
-
-## License
-
-MIT
