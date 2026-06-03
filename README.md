@@ -1,55 +1,81 @@
 <div align="center">
 
-# Task Tracker API
+# 🚀 Task Tracker API
 
-Async task management REST API built with FastAPI and SQLAlchemy.
+**A modern asynchronous task management REST API built with FastAPI, SQLAlchemy, and JWT Authentication.**
 
-![Python](https://img.shields.io/badge/python-3.12-blue)
-![FastAPI](https://img.shields.io/badge/FastAPI-async-green)
-![License](https://img.shields.io/badge/license-MIT-orange)
+![Python](https://img.shields.io/badge/Python-3.12-blue?style=for-the-badge\&logo=python)
+![FastAPI](https://img.shields.io/badge/FastAPI-Async-009688?style=for-the-badge\&logo=fastapi)
+![SQLite](https://img.shields.io/badge/Database-SQLite-003B57?style=for-the-badge\&logo=sqlite)
+![License](https://img.shields.io/badge/License-MIT-orange?style=for-the-badge)
+
+<br>
+
+Secure user authentication, task management, and user-specific task tracking with a fully asynchronous backend architecture.
+
+[Features](#-features) • [Quick Start](#-quick-start) • [API Docs](#-api-documentation) • [Endpoints](#-api-endpoints) • [Roadmap](#-roadmap)
 
 </div>
 
 ---
 
-## Features
+## ✨ Features
 
-- JWT Authentication
-- OAuth2 Password Flow
-- Async SQLAlchemy
-- SQLite + aiosqlite
-- User Management
-- Task CRUD Operations
-- User-specific Tasks
-- Partial Updates with `PATCH`
-- Task Completion Tracking
+### 🔐 Authentication & Security
+
+* JWT Authentication
+* OAuth2 Password Flow
+* Protected endpoints
+* User-specific data access
+
+### 📋 Task Management
+
+* Create, read, update, and delete tasks
+* Partial updates using `PATCH`
+* Task completion tracking
+* User-owned task isolation
+
+### ⚡ Modern Backend Stack
+
+* Fully asynchronous architecture
+* FastAPI framework
+* Async SQLAlchemy ORM
+* SQLite with `aiosqlite`
 
 ---
 
-## Quick Start
+## 🛠️ Tech Stack
 
-### 1. Clone the repository
+| Layer           | Technology         |
+| --------------- | ------------------ |
+| Framework       | FastAPI            |
+| Language        | Python 3.12        |
+| ORM             | SQLAlchemy (Async) |
+| Database        | SQLite             |
+| Authentication  | JWT + OAuth2       |
+| ASGI Server     | Uvicorn            |
+| Package Manager | uv                 |
+
+---
+
+## 🚀 Quick Start
+
+### Clone Repository
 
 ```bash
 git clone https://github.com/syswitzz/task-tracker-api.git
 cd task-tracker-api
 ```
 
----
-
-### 2. Install dependencies
-
-This project uses `uv`.
+### Install Dependencies
 
 ```bash
 uv sync
 ```
 
----
+### Configure Environment Variables
 
-### 3. Configure environment variables
-
-Create a `.env` file in the project root.
+Create a `.env` file:
 
 ```env
 SECRET_KEY=your_secret_key
@@ -57,21 +83,19 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 ALGORITHM=HS256
 ```
 
-Generate a secure secret key:
+Generate a secure key:
 
 ```bash
-python3 -c "import secrets; print(secrets.token_hex(32))"
+python -c "import secrets; print(secrets.token_hex(32))"
 ```
 
----
-
-### 4. Run the development server
+### Run Development Server
 
 ```bash
 uv run uvicorn main:app --reload
 ```
 
-Server starts at:
+Server will start at:
 
 ```text
 http://127.0.0.1:8000
@@ -79,43 +103,78 @@ http://127.0.0.1:8000
 
 ---
 
-## API Documentation
+## 📚 API Documentation
 
-| Service | URL |
-|---|---|
-| Swagger UI | `http://127.0.0.1:8000/docs` |
-| ReDoc | `http://127.0.0.1:8000/redoc` |
+| Interface  | URL                           |
+| ---------- | ----------------------------- |
+| Swagger UI | `http://127.0.0.1:8000/docs`  |
+| ReDoc      | `http://127.0.0.1:8000/redoc` |
 
-Swagger UI supports JWT authentication using the built-in **Authorize** button.
+> Swagger UI includes built-in JWT authentication via the **Authorize** button.
 
 ---
 
-## Database
+## 🗄️ Database
 
-The project uses SQLite with `aiosqlite`.
-
-Database file:
+SQLite is used as the default database.
 
 ```text
 tasks.db
 ```
 
-The database is automatically created on startup.
+The database is automatically initialized when the application starts.
 
 ---
 
-## Example Request
+## 🔗 API Endpoints
 
-### Create Task
+<details>
+<summary><strong>👤 User Endpoints</strong></summary>
+
+| Method | Endpoint           | Description                 |
+| ------ | ------------------ | --------------------------- |
+| POST   | `/users`           | Register user               |
+| GET    | `/users`           | Get all users               |
+| POST   | `/users/token`     | Login & obtain access token |
+| GET    | `/users/me`        | Current authenticated user  |
+| PUT    | `/users/{user_id}` | Update user                 |
+| DELETE | `/users/{user_id}` | Delete user                 |
+
+</details>
+
+<details>
+<summary><strong>📝 Task Endpoints</strong></summary>
+
+| Method | Endpoint                      | Description              |
+| ------ | ----------------------------- | ------------------------ |
+| GET    | `/tasks`                      | Get all tasks            |
+| POST   | `/tasks`                      | Create task              |
+| GET    | `/tasks/me`                   | Get current user's tasks |
+| GET    | `/tasks/{task_id}`            | Get task by ID           |
+| PATCH  | `/tasks/{task_id}`            | Update task              |
+| DELETE | `/tasks/{task_id}`            | Delete task              |
+| POST   | `/tasks/{task_id}/complete`   | Mark completed           |
+| POST   | `/tasks/{task_id}/incomplete` | Mark incomplete          |
+
+</details>
+
+---
+
+## 🧪 Example Request
+
+### Create a Task
 
 ```bash
 curl -X POST http://127.0.0.1:8000/tasks \
 -H "Authorization: Bearer <token>" \
 -H "Content-Type: application/json" \
--d '{"title":"Finish README","description":"Write project documentation"}'
+-d '{
+  "title":"Finish README",
+  "description":"Write project documentation"
+}'
 ```
 
-Example response:
+### Response
 
 ```json
 {
@@ -129,47 +188,11 @@ Example response:
 
 ---
 
-<details>
-<summary><strong>API Endpoints</strong></summary>
-
-<br>
-
-### Users
-
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/users` | Get all users |
-| POST | `/users` | Create user |
-| POST | `/users/token` | Login and get access token |
-| GET | `/users/me` | Get current authenticated user |
-| PUT | `/users/{user_id}` | Update user |
-| DELETE | `/users/{user_id}` | Delete user |
-
----
-
-### Tasks
-
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/tasks` | Get all tasks |
-| POST | `/tasks` | Create task |
-| GET | `/tasks/me` | Get current user's tasks |
-| GET | `/tasks/{task_id}` | Get task by ID |
-| PATCH | `/tasks/{task_id}` | Partially update task |
-| DELETE | `/tasks/{task_id}` | Delete task |
-| POST | `/tasks/{task_id}/complete` | Mark task completed |
-| POST | `/tasks/{task_id}/incomplete` | Mark task incomplete |
-
-</details>
-
----
-
-## Project Structure
+## 📁 Project Structure
 
 ```text
-.
+task-tracker-api/
 ├── router/
-│   ├── __init__.py
 │   ├── tasks.py
 │   └── users.py
 ├── auth.py
@@ -185,18 +208,42 @@ Example response:
 
 ---
 
-## Roadmap
+## 🗺️ Roadmap
 
-- Task priority system
-- Tags & categories
-- Deadlines & reminders
-- Stats & analytics
-- Pagination & filtering
-- Docker support
-- Unit tests
+* [x] JWT Authentication
+* [x] Async SQLAlchemy
+* [x] User-specific Tasks
+* [x] Task Completion Tracking
+* [ ] Task Priorities
+* [ ] Tags & Categories
+* [ ] Deadlines & Reminders
+* [ ] Pagination & Filtering
+* [ ] Docker Support
+* [ ] Unit Tests
+* [ ] PostgreSQL Support
 
 ---
 
-## License
+## 🤝 Contributing
 
-MIT
+Contributions, issues, and feature requests are welcome.
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push the branch
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+Licensed under the MIT License.
+
+---
+
+<div align="center">
+
+Built with ❤️ using FastAPI & Python
+
+</div>
